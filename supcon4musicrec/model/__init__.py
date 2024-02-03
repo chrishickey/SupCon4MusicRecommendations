@@ -1,3 +1,9 @@
+"""
+Code modified from: https://github.com/eldrin/MTLMusicRepresentation-PyTorch/blob/master/musmtl/train.py#L22
+Original paper: https://arxiv.org/abs/1802.04051
+"""
+
+
 from typing import Dict, List, Optional
 
 import numpy as np
@@ -7,10 +13,10 @@ import torch.nn.functional as F
 from cached_property import cached_property
 
 
-class VGGlikeMTL(nn.Module):
+class VGGLikeMultiTaskEncoder(nn.Module):
     """VGG-like architecture for Multi-Task Learning"""
 
-    def __init__(self, tasks: List[str], n_outs: int = 50, n_ch_in: int = 2) -> None:
+    def __init__(self, tasks: List[str], n_outs: int = 128, n_ch_in: int = 2) -> None:
         super().__init__()
         self.n_outs: int = n_outs
         self.n_ch_in: int = n_ch_in
@@ -47,6 +53,9 @@ class VGGlikeMTL(nn.Module):
         if task is not None:
             X = self.head[task](X)
         return X
+
+    def eval(self):
+        return self.encoder.eval()
 
 
 class ConvBlock2d(nn.Module):
